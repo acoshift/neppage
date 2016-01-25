@@ -1,0 +1,8 @@
+node_modules/
+typings/
+build/
+dist/
+pages/
+src/config.ts
+*.map
+*.log
