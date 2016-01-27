@@ -11,5 +11,9 @@
   "dependencies": {
     "express": "^5.0.0-alpha.2",
     "lodash": "^4.0.1"
+  },
+  "devDependencies": {
+    "tslint-eslint-rules": "^1.0.1",
+    "typescript": "^1.9.0-dev.20160127"
   }
 }
