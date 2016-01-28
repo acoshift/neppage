@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "module": "commonjs",
     "moduleResolution": "node",
     "isolatedModules": false,
@@ -25,6 +25,7 @@
   "files": [
     "src/config.ts",
     "src/index.ts",
+    "src/lib/file-config.ts",
     "src/lib/page-config.ts",
     "src/lib/route-config.ts",
     "typings/tsd.d.ts"
@@ -33,5 +34,6 @@
   "buildOnSave": false,
   "atom": {
     "rewriteTsconfig": true
-  }
+  },
+  "externalTranspiler": "babel"
 }

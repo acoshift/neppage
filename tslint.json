@@ -4,8 +4,7 @@
     "class-name": true,
     "comment-format": [
       true,
-      "check-space",
-      "check-lowercase"
+      "check-space"
     ],
     "eofline": true,
     "indent": [
@@ -102,7 +101,6 @@
       "check-branch",
       "check-decl",
       "check-operator",
-      "check-separator",
       "check-type",
       "check-typecast",
       "check-module"
