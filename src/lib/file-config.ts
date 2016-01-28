@@ -3,6 +3,7 @@ import * as https from 'https'
 import * as path from 'path'
 import * as fs from 'fs'
 import * as _ from 'lodash'
+import * as mkdirp from 'mkdirp'
 import config from '../config'
 import PageConfig from './page-config'
 
@@ -58,7 +59,10 @@ class FileConfig {
 
     fs.unlink(path.join(config.pagesDir, this.pageName, this.path, this.name), err => {
       this.data = undefined
-      if (err) return this.error()
+      if (err && err.errno !== -4058) return this.error()
+
+      // just remove if empty
+      fs.rmdir(path.join(config.pagesDir, this.pageName, this.path), () => {})
 
       let opt: http.RequestOptions = {
         host: config.db.host,
@@ -70,7 +74,9 @@ class FileConfig {
           'Authorization': 'Bearer ' + config.db.token
         }
       }
-      let req = _http.request(opt)
+      let req = _http.request(opt, res => {
+        res.on('end', () => {})
+      })
       req.on('error', () => {})
       req.end(`delete files("${this._id}"){}`)
     })
@@ -80,23 +86,29 @@ class FileConfig {
     this.data = decode(this.data)
     if (!path.isAbsolute(this.path) || _.isNull(this.data)) return this.error()
 
-    fs.writeFile(path.join(config.pagesDir, this.pageName, this.path, this.name), this.data, err => {
-      this.data = undefined
-      if (err) return this.error()
-
-      let opt: http.RequestOptions = {
-        host: config.db.host,
-        port: config.db.port,
-        path: '/' + config.db.ns,
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/nepq',
-          'Authorization': 'Bearer ' + config.db.token
-        }
+    mkdirp(path.join(config.pagesDir, this.pageName, this.path), err => {
+      if (err) {
+        this.data = undefined
+        return this.error()
       }
-      let req = _http.request(opt)
-      req.on('error', () => {})
-      req.end(`update files("${this._id}",{},["data", "op"]){}`)
+      fs.writeFile(path.join(config.pagesDir, this.pageName, this.path, this.name), this.data, err => {
+        this.data = undefined
+        if (err) return this.error()
+
+        let opt: http.RequestOptions = {
+          host: config.db.host,
+          port: config.db.port,
+          path: '/' + config.db.ns,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/nepq',
+            'Authorization': 'Bearer ' + config.db.token
+          }
+        }
+        let req = _http.request(opt)
+        req.on('error', () => {})
+        req.end(`update files("${this._id}",{},["data", "op"]){}`)
+      })
     })
   }
 

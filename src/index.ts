@@ -11,8 +11,7 @@ import FileConfig from './lib/file-config'
 
 let configs: PageConfig[] = []
 
-reloadPageConfig()
-operateFileConfig()
+reloadPageConfig(true)
 
 let patch: Observer<{}>
 const observable = (<Observable<{}>> Observable.create((observer: Observer<{}>) => { patch = observer })).share()
@@ -76,11 +75,12 @@ app.use(express.static(path.join(__dirname, appConfig.pagesDir)))
 app.use((req, res) => { res.sendStatus(404) })
 app.listen(appConfig.port)
 
-function reloadPageConfig (): void {
+function reloadPageConfig (op: boolean = false): void {
   PageConfig.load((err, result) => {
     if (err || !result) return // skip error
     configs = result
     RouteConfig.operate(result)
+    if (op) operateFileConfig()
   })
 }
 
