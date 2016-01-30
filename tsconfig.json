@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
     "isolatedModules": false,
@@ -34,6 +34,5 @@
   "buildOnSave": false,
   "atom": {
     "rewriteTsconfig": true
-  },
-  "externalTranspiler": "babel"
+  }
 }

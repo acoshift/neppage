@@ -6,7 +6,6 @@ import * as _ from 'lodash'
 
 const _config = config.route
 const _http = _config.protocol === 'https' ? https : http
-let _etag = ''
 
 interface RouteConfig { // write to neproute db
   _id?: string
@@ -73,8 +72,7 @@ class RouteConfig {
       method: 'POST',
       headers: {
         'Content-Type': 'application/nepq',
-        'Authorization': 'Bearer ' + _config.token,
-        'If-None-Match': _etag
+        'Authorization': 'Bearer ' + _config.token
       }
     }
     let req = _http.request(opt, res => {
@@ -88,7 +86,6 @@ class RouteConfig {
           try {
             let result = (<RouteConfig[]> JSON.parse(Buffer.concat(data).toString('utf8')))
               .map(x => new RouteConfig(x))
-            _etag = res.headers['etag']
 
             // deep check and update
             _.forEach(pageConfigs, x => {
